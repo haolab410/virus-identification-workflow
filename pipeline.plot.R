@@ -5,58 +5,33 @@ library(optparse)
 args <- commandArgs(TRUE)
 folder = (args[1])
 sample = (args[2])
-<<<<<<< HEAD
 folder = (paste(folder,'/',sep=''))
 print(folder)
 print('here')
     
 cols<-c("orange","green","blue","red3","gray","purple","black")
 meta<-read.table(paste(folder,"/cov.summary.txt",sep=""),check.names=F,comment.char = "",header=T)
-=======
-print(paste(folder,sample,sep=''))
-  
-path<-folder
-path.report<-paste(folder,sample,".",sep="")
-    
-cols<-c("orange","green","blue","red3","gray","purple","black")
-meta<-read.table(paste(folder,"cov.summary.txt",sep=""),check.names=F,comment.char = "",header=T)
->>>>>>> b6d05df... Add files via upload
 index<-sort(meta$"Avg_fold",decreasing=T,index.return=T)
 meta<-meta[index$ix,]
 cov.th<-50
 Accs<-subset(meta,Covered_percent>cov.th,select=c("#ID"))[,1]
 #paste(folder,sample,"/",sep="")
   
-<<<<<<< HEAD
 temp<-read.delim(paste(folder,"/FastViromeExplorer-final-sorted-abundance.tsv",sep=""),check.names=F,comment.char = "",header=T)
-=======
-temp<-read.delim(paste(folder,sample,"/FastViromeExplorer-final-sorted-abundance.tsv",sep=""),check.names=F,comment.char = "",header=T)
->>>>>>> b6d05df... Add files via upload
 index<-match(Accs,temp[,1])
 Vnames<-temp[index,2]
   
     #######quality piechart#########
-<<<<<<< HEAD
 abund<-read.delim(paste(folder,"/abundance.tsv",sep=""),check.names=F,comment.char = "",header=T)
 reads.virus<-sum(abund$est_counts)
 reads.qc<-read.table(paste(folder,"/reads.qc.summary.txt",sep=""),header=T,sep="\t")
-=======
-abund<-read.delim(paste(folder,sample,"/abundance.tsv",sep=""),check.names=F,comment.char = "",header=T)
-reads.virus<-sum(abund$est_counts)
-reads.qc<-read.table(paste(folder,"reads.qc.summary.txt",sep=""),header=T,sep="\t")
->>>>>>> b6d05df... Add files via upload
 reads.hg<-reads.qc$Reads_mapped
 reads.LQ<-reads.qc$Read_QC_Removed
 reads.Others<-reads.qc$Reads_Total-reads.hg-reads.LQ-reads.virus
 read.distri<-c(reads.virus,reads.hg,reads.Others,reads.LQ)
 percent<- paste("(",round(100*read.distri/reads.qc$Reads_Total,digit=2),"%)",sep="")
-<<<<<<< HEAD
 names(read.distri)<-paste(c("Virus","Host","Others","Low Quality"),percent,sep="")  
 pdf(file=paste(folder,"/piechart-reads-qc.pdf",sep=""))
-=======
-names(read.distri)<-paste(c("Virus","Human","Others","Low Quality"),percent,sep="")  
-pdf(file=paste(folder,"piechart-reads-qc.pdf",sep=""))
->>>>>>> b6d05df... Add files via upload
 par(mar = c(2,5,2,5))
 pie(read.distri, labels = names(read.distri), edges = 200, radius = 1,clockwise = FALSE, density = NULL, angle = 45,col = cols, cex=0.7,border = NULL, lty = NULL, main = NULL)
     
@@ -85,11 +60,7 @@ LeftAxisAt <- LeftAxisLabs/max(mat.virus$est_counts)
 RightAxisAt <- RightAxisLabs/max(mat.virus$cov.perc)
 LeftAxisLabs <-paste("1e+0",LeftAxisLabs,sep="")
 RightAxisLabs<-paste(RightAxisLabs,"%",sep="")
-<<<<<<< HEAD
 pdf(file=paste(folder,"/barplot-virus.pdf",sep=""))
-=======
-pdf(file=paste(folder,"barplot-virus.pdf",sep=""))
->>>>>>> b6d05df... Add files via upload
 par(mar = c(5,5,2,5))
 with(mat.virus, plot(target_id,est.counts.norm, type='1',ann=T,axes=FALSE,xlab='',bty="1",ylab="Reads of Coverage",ylim=c(0,max( mat.virus$est.counts.norm)+4.5)))
 par(new = T)
@@ -120,19 +91,11 @@ dev.off()
 num.plot<-length(Accs)
 print(num.plot)
 if(num.plot > 0){
-<<<<<<< HEAD
     pdf(file=(paste(folder,"/coverage-virus.pdf",sep="")))
     par(mfrow=c(num.plot,1))
     for(i in 1:length(Accs))
     {
         data<-read.table(paste(folder,Accs[i],".basecov.txt",sep=""),header=F,sep="\t")
-=======
-    pdf(file=(paste(folder,"coverage-virus.pdf",sep="")))
-    par(mfrow=c(num.plot,1))
-    for(i in 1:length(Accs))
-    {
-        data<-read.table(paste(folder,sample,".",Accs[i],".basecov.txt",sep=""),header=F,sep="\t")
->>>>>>> b6d05df... Add files via upload
         end<-max(data[,2])
         index<-match(data[,2],0:end)
         x<-0:end
@@ -147,16 +110,10 @@ if(num.plot > 0){
     #savepdf(paste(folder,"coverage-virus",sep=""))
     dev.off()
 } else {
-<<<<<<< HEAD
     pdf(file=(paste(folder,"/coverage-virus.pdf",sep="")))
     #par(pty='s')
     plot.new()
     title('No Virus Found with Coverage Larger than 50%')
-=======
-    pdf(file=(paste(folder,"coverage-virus.pdf",sep="")))
-    par(mar = c(2,5,2,5))
-    pie(read.distri, labels = names(read.distri), edges = 200, radius = 1,clockwise = FALSE, density = NULL, angle = 45,col = cols, cex=0.7,border = NULL, lty = NULL, main = NULL)
->>>>>>> b6d05df... Add files via upload
 
     dev.off()
 }

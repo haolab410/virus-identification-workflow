@@ -19,6 +19,6 @@ file.brew<-system(paste("sed 's/<% cat(sample<-\".*\") %>/",label,"/' temp.brew"
     print(file.brew)
     writeLines(file.brew,"reportofvirus.brew")
     
-brew("reportofvirus.brew", "test.tex",text=sample)
-texi2dvi("test.tex", pdf = TRUE)
+brew("reportofvirus.brew", "report.tex",text=sample)
+texi2dvi("report.tex", pdf = TRUE)
  
