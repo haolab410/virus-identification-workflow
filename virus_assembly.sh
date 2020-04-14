@@ -77,18 +77,18 @@ for acc in ${Accs[@]};do
     bwa aln -t ${thread} ${refs}/${acc} ${assembly}/${acc}_kalli_1.fq > ${assembly}/${acc}_1.sai
     bwa aln -t ${thread} ${refs}/${acc} ${assembly}/${acc}_kalli_2.fq > ${assembly}/${acc}_2.sai
     bwa sampe ${refs}/${acc} ${assembly}/${acc}_1.sai ${assembly}/${acc}_2.sai ${assembly}/${acc}_kalli_1.fq ${assembly}/${acc}_kalli_2.fq > ${assembly}/${acc}.sam
-    rm ${assembly}/${acc}_kalli*
+    #rm ${assembly}/${acc}_kalli*
     
     #remove duplicates and sort
     samtools view -@ ${thread} -F 4 -Sbh ${assembly}/${acc}.sam|samtools sort -@ ${thread} -o ${assembly}/${acc}.bam 
     java -jar ${picard} MarkDuplicates M=${assembly}/${acc}_dupstats REMOVE_DUPLICATES=TRUE I=${assembly}/${acc}.bam O=${assembly}/${acc}_nodup.bam
     samtools index ${assembly}/${acc}_nodup.bam
-    rm ${assembly}/${acc}.sam
-    rm ${assembly}/${acc}.bam
+    #rm ${assembly}/${acc}.sam
+    #rm ${assembly}/${acc}.bam
 
     ### call snvs in virus ####
-    rm ${assembly}/${acc}.cov.txt
-    rm ${assembly}/${acc}.basecov.txt
+    #rm ${assembly}/${acc}.cov.txt
+    #rm ${assembly}/${acc}.basecov.txt
     pileup.sh in=${assembly}/${acc}_nodup.bam out=${assembly}/${acc}.cov.txt basecov=${assembly}/${acc}.basecov.txt
     grep -v '#' ${assembly}/${acc}.basecov.txt|awk '{print $1"\t"$2+1"\t"$2+1"\t"$3}' |awk '$4<=3 {print}' >${assembly}/${acc}_basecov_bed 
     bcftools mpileup -f ${refs}/${acc}.fa ${assembly}/${acc}_nodup.bam | bcftools call -mv -Oz -o ${assembly}/${acc}.vcf.gz  

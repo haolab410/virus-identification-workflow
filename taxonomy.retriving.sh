@@ -22,21 +22,19 @@ awk -F ',' '{print $1"\t"$2";"$3";"$4";"$5";"$6";"$7";"$8}' ${i} |sort -k 1b,1 |
 
 #download virus genome from ncbi
 cd ${outdir}
-#wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.1.1.genomic.fna.gz
-#wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.2.1.genomic.fna.gz
-#wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.3.1.genomic.fna.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.1.1.genomic.fna.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.2.1.genomic.fna.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.3.1.genomic.fna.gz
 
-#gzip -d viral.*.1.genomic.fna.gz
-#cat viral.*.1.genomic.fna >viral.genomic.2020.01.27.fna
-#rm viral.*.1.genomic.fna
-#samtools faidx ${outdir}/viral.genomic.2020.01.27.fna
+gzip -d viral.*.1.genomic.fna.gz
+cat viral.*.1.genomic.fna >viral.genomic.fna
+rm viral.*.1.genomic.fna
+samtools faidx ${outdir}/viral.genomic.fna
 
-# downloading kallisto index
-#wget https://bench.cs.vt.edu/FastViromeExplorer/ncbi-virus-kallisto-index-k31.idx
 
 # downloading accession2taxid file
-#wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz
-#gzip -d nucl_gb.accession2taxid.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz
+gzip -d nucl_gb.accession2taxid.gz
 grep -E 'AC|NC' nucl_gb.accession2taxid >nucl_gb.accession2taxid_virus
 awk '{print $1"\t"$3}' nucl_gb.accession2taxid_virus |sort -k 1b,1 >nucl_gb.accession2taxid_virus_short
 
@@ -59,3 +57,4 @@ awk -F '\t' '{print $2"\t"$4}' ${outdir}/taxons_virus.txt |sort -k1 >${outdir}/t
 paste -d '\t' ${outdir}/temp.ids_names.txt ${outdir}/temp.ids_taxons.txt ${outdir}/temp.ids_length.txt|awk -F '\t' '{print $1"\t"$2"\t"$4"\t"$6}' >${outdir}/viruses-list.txt
 
 rm ${outdir}/temp.ids_*
+kallisto index -i ncbi-virus-kallisto-index-k31.idx viral.genomic.fna

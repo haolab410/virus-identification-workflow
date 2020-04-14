@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6e3417673e8901edf29e9403928183ee334a2442d74905439a5f0698a8943c88
-size 226
+row numer,name,description
+1,Species,species
+2,Genus,genus
+3,GI,The GI number of the species found on NCBI
+4,%Coverage,coverage
+5,Reads_hit,number of reads that mapped
+6,Average_depth_of_coverage,average coverage depth
