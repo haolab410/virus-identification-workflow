@@ -1,0 +1,8 @@
+Index,Name,Description
+1,Sample ID,Sample ID
+4,Reads_N,Total number of Read
+5,Base_N,Total number of bases
+6,Average_Length,average read length
+7,GC(%),percentage of C+G occupied across all bases
+8,Q20(%),percentage of bases with less than 1% sequencing error rate
+9,Q30(%),percentage of bases with less than 0.1% sequencing error rate

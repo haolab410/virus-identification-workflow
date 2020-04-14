@@ -1,0 +1,7 @@
+row numer,name,description
+1,Species,species
+2,Genus,genus
+3,GI,The GI number of the species found on NCBI
+4,%Coverage,coverage
+5,Reads_hit,number of reads that mapped
+6,Average_depth_of_coverage,average coverage depth

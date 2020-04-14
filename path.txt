@@ -1,0 +1,3 @@
+picard=/home/shiyangs/software/picard/picard.jar
+FastViromeExplorer=-cp /home/shiyangs/software/FastViromeExplorer-master/bin/ FastViromeExplorer
+
