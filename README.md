@@ -28,25 +28,25 @@ to obtain the following files:
 # Run pipeline with test data
 The test data is from SARS-CoV-2 patients. You can run our pipeline by running pipeline.sh.
         
-        bash pipeline.sh -1 test/test_R1.fastq.gz -2 test/test_R2.fastq.gz -o test/ -t 8 -h test/grch38/genome -l test/viruses-list.txt -k test/ncbi-virus-kallisto-index-k31.idx -r test/viral.genomic.fna
+        bash pipeline.sh -1 test/test_R1.fastq.gz -2 test/test_R2.fastq.gz -o test/ -t 8 -h your_path/grch38/genome -l your_path/viruses-list.txt -k your_path/ncbi-virus-kallisto-index-k31.idx -r your_path/viral.genomic.fna
 
 You can also run step by steps:
 
    for quality control and remove host sequences:
    
-        bash perprocess.sh -1 test/test_R1.fastq.gz -2 test/test_R2.fastq.gz -o test/ -t 8 -h test/grch38/genome
+        bash perprocess.sh -1 test/test_R1.fastq.gz -2 test/test_R2.fastq.gz -o test/ -t 8 -h your_path/grch38/genome
    for virus identification:
    
-        bash virus_identification.sh -p test -o test/ -l test/viruses-list.txt -k test/ncbi-virus-kallisto-index-k31.idx -t 8
+        bash virus_identification.sh -p test -o test/ -l your_path/viruses-list.txt -k your_path/ncbi-virus-kallisto-index-k31.idx -t 8
    for virus assembly with our default method (kallisto + bwa):
    
-        bash virus_assembly.sh -p test -r test/viral.genomic.fna -o test/ -t 8
+        bash virus_assembly.sh -p test -r your_path/viral.genomic.fna -o test/ -t 8
    or with kallisto alignment only:
       
-        bash virus_assembly_kallisto.sh -p test -r test/viral.genomic.fna -o test/ -t 8
+        bash virus_assembly_kallisto.sh -p test -r your_path/viral.genomic.fna -o test/ -t 8
    or with bwa alignment only:
    
-        bash virus_assembly_bwa.sh -p test -r test/viral.genomic.fna -o test/ -t 8
+        bash virus_assembly_bwa.sh -p test -r your_path/viral.genomic.fna -o test/ -t 8
    for generating a report:
    
         bash report.sh -p test -o test/ -m default
