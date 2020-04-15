@@ -12,6 +12,10 @@ NCBItax2lin -- can be downloaded from (https://github.com/zyxue/ncbitax2lin), it
 # generate required reference:
 First, follow the instruction from NCBItax2lin to download taxonomy list lineages-XXXX-XX-XX.csv, this needs to be done in python 2 environment.
 
+    make
+    
+After make, you will get the file lineages-XXXX-XX-XX.csv
+
 Then, run taxonomy.retriving.sh 
 
     bash taxonomy.retriving.sh <lineages-XXXX-XX-XX.csv>
