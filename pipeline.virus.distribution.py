@@ -8,7 +8,7 @@ import pandas as pd
 sample = sample.strip('\n')
 cov = pd.read_csv(packagename + "cov.summary.txt",sep="\t")
 cov.head()
-cov["Reads_hit"] = cov.apply(lambda x: x["Plus_reads"]*x["Minus_reads"], axis=1)
+cov["Reads_hit"] = cov.apply(lambda x: x["Plus_reads"]+x["Minus_reads"], axis=1)
 data1 = cov[["#ID","Avg_fold","Covered_percent","Reads_hit"]]
 data1.columns = ["GI","Average_depth_of_coverage","%Coverage","Reads_hit"]
 abundance = pd.read_csv(packagename + "FastViromeExplorer-final-sorted-abundance.tsv",sep="\t")
