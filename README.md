@@ -3,7 +3,31 @@
 Our virus identification workflow is able to detect viruses from the Next Generation Sequencing raw data. Users can run with raw RNA-seq data towards a final report with data quality, viruses infected and their sequence information. 
 
 # required software:
-fastqc; fqcheck 2.05 (https://github.com/BGI-shenzhen/FxTools); trim_galore; hisat2; samtools 1.10 and above; bam2fastq; picard; FastViromeExplorer; bbmap pileup.sh; bwa; bcftools 1.8 and above; python 3; R 3.5 with library brew, ggplot2, geneplotter, optparse.  You will need to install these softwares and put them in the environment you run.
+fastqc; fqcheck 2.05 (https://github.com/BGI-shenzhen/FxTools); 
+
+trim_galore;
+
+hisat2; 
+
+samtools 1.6 and above; 
+
+bam2fastq; 
+
+picard; 
+
+FastViromeExplorer; 
+
+bbmap pileup.sh; 
+
+bwa; 
+
+bcftools 1.8 and above; 
+
+python 3; 
+
+R 3.5 with library brew, ggplot2, geneplotter, optparse.  
+
+You will need to install these softwares and put them in the environment you run.
 
 FastViromeExplorer; picard should be install and users need to put the path of these two software in path.txt.
 
@@ -24,7 +48,7 @@ to obtain the following files:
 
   1. virus genome reference 
   2. virus list: viruses-list.txt
-  3. kallisto index (you can also download from FastViromeExplorer): ncbi-virus-kallisto-index-k31.idx
+  3. kallisto index: ncbi-virus-kallisto-index-k31.idx
 # Run pipeline with test data
 The test data is from SARS-CoV-2 patients. You can run our pipeline by running pipeline.sh.
         
