@@ -9,7 +9,7 @@ trim_galore;
 
 hisat2; 
 
-samtools 1.6 and above; 
+samtools 1.10 and above; 
 
 bam2fastq; 
 
