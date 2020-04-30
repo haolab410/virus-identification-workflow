@@ -5,32 +5,32 @@ paired='p'
 while getopts ":1:2:o:t:h:" opt
 do
     case $opt in
-		    1)
-		    i1=$OPTARG
+	1)
+	i1=$OPTARG
         ;;
-		    o)
-    		working_dic="$OPTARG"
-		    ;;
-		    t)
-		    thread="$OPTARG"
-		    ;;
+	o)
+    	working_dic="$OPTARG"
+	;;
+	t)
+	thread="$OPTARG"
+	;;
         h)
-		    host_ref="$OPTARG"
-		    ;;
+	host_ref="$OPTARG"
+	;;
         2)
-		    i2=$OPTARG
+	i2=$OPTARG
         ;;
-		    ?)
-		    echo "help"
+	?)
+	echo "help"
         echo "requested parameter:"
-		    echo "-1       input .fastq file or .fastq.gz file for reads sequence 1"
+	echo "-1       input .fastq file or .fastq.gz file for reads sequence 1, use ',' to seperate multile files"
         echo "-2       input .fastq file or .fastq.gz file for paired-end reads sequence 2; ignore this if single-end"
-		    echo "-h       host genome hisat2 index"
+	echo "-h       host genome hisat2 index"
         echo "optional parameter:"
         echo "-o       directory for output files; default is current path"
-		    echo "-t       number of threads used; default 1"
-		    exit 1;;
-	  esac
+	echo "-t       number of threads used; default 1"
+	exit 1;;
+	esac
 done
 
 echo ${i2}
