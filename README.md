@@ -9,7 +9,7 @@ trim_galore;
 
 hisat2; 
 
-samtools 1.10 and above; 
+samtools 1.6 and above; 
 
 bam2fastq; 
 
@@ -82,8 +82,8 @@ You can also run step by steps:
 pipeline.sh
 
 requests:
-  1. -1: input .fastq file or .fastq.gz file for paired-end reads sequence 1
-  2. -2: input .fastq file or .fastq.gz file for paired-end reads sequence 2
+  1. -1: input .fastq file or .fastq.gz file for paired-end reads sequence 1, use ',' to seperate multiple files
+  2. -2: input .fastq file or .fastq.gz file for paired-end reads sequence 2, use ',' to seperate multiple files, ignore this if single-            read
   3. -h: host genome hisat2 index
   4. -l: the virus list 
   5. -k: kallisto index
@@ -98,8 +98,8 @@ optional:
 preprocess.sh
 
 request:
-  1. -1: input .fastq file or .fastq.gz file for paired-end reads sequence 1
-  2. -2: input .fastq file or .fastq.gz file for paired-end reads sequence 2
+  1. -1: input .fastq file or .fastq.gz file for paired-end reads sequence 1, use ',' to seperate multiple files
+  2. -2: input .fastq file or .fastq.gz file for paired-end reads sequence 2, use ',' to seperate multiple files, ignore this if single-            read
   3. -h: host genome hisat2 index
 
 optional:
