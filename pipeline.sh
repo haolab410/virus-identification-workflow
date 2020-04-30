@@ -10,52 +10,52 @@ picard=`grep 'picard' ${pipedir}/path.txt|awk -F '=' '{print $2}'`
 while getopts ":1:2:o:t:h:l:k:r:i:m:" opt
 do
     case $opt in
-		    1)
-		    input1=$OPTARG
-		    ;;
-		    2)
-		    input2=$OPTARG
-    		;;
-		    o)
-    		working_dic="$OPTARG"
-		    ;;
-		    t)
-		    thread="$OPTARG"
-		    ;;
-		    h)
-		    host_ref="$OPTARG"
-		    ;;
+	1)
+	input1=$OPTARG
+	;;
+	2)
+	input2=$OPTARG
+    	;;
+	o)
+    	working_dic="$OPTARG"
+	;;
+	t)
+	thread="$OPTARG"
+	;;
+	h)
+	host_ref="$OPTARG"
+	;;
         l)
-		    virus_list="$OPTARG"
-		    ;;
-		    k)
-		    kallisto_list="$OPTARG"
-		    ;;
+	virus_list="$OPTARG"
+	;;
+	k)
+	kallisto_list="$OPTARG"
+	;;
         r)
         file_db="$OPTARG"
         ;;
         i)
         index_dic="$OPTARG"
         ;;
-		    m)
+	m)
         method="$OPTARG"
         ;;
-		    ?)
+	?)
         echo "help"
         echo "requested parameter:"
-		    echo "-1       input .fastq file or .fastq.gz file for paired-end reads sequence 1"
-        echo "-2       input .fastq file or .fastq.gz file for paired-end reads sequence 2"
-		    echo "-h       host genome hisat2 index"
+	echo "-1       input .fastq file or .fastq.gz file for paired-end reads sequence 1, use ',' to seperate multiple files"
+        echo "-2       input .fastq file or .fastq.gz file for paired-end reads sequence 2, ignore this if single-end reads"
+	echo "-h       host genome hisat2 index"
         echo "-l 			 the virus list"
-		    echo "-k       kallisto index"
+	echo "-k       kallisto index"
         echo "-r       reference viral genome"
         echo "optional parameter:"
         echo "-o       directory for output files; default is current path"
-		    echo "-t       number of threads used; default 1"
+	echo "-t       number of threads used; default 1"
         echo "-i       path to store single viral genome reference; default will auto create an file refs in working path"
         echo "-m       assembly method used: default or kallisto or bwa"
-		    exit 1;;
-	  esac
+	exit 1;;
+	esac
 done
 if [ -z ${input2}]
 then
