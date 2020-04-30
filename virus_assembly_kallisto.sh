@@ -26,8 +26,8 @@ do
             echo "requested parameters:"
             echo "-p       prefix of input .fq files in preprocess output"
             echo "-r       reference viral genome"
-            echo "-i       path to store single viral genome reference; default will auto create an file refs in working path"
             echo "optional parameters:"
+            echo "-i       path to store single viral genome reference; default will auto create an file refs in working path"
             echo "-o       directory for output files; default is current path"
             echo "-t       number of threads used; default 1"
             exit 1;;
@@ -47,14 +47,11 @@ mkdir ${refs}
 file_sam=${fve}/FastViromeExplorer-reads-mapped-sorted.sam
 samtools view -@ ${thread} -b $file_sam -o ${assembly}/kalli.bam
 samtools index -@ ${thread} ${assembly}/kalli.bam
-
+echo 'here'
 ################## virus assembly ###################################
 Accs=`awk '{print $1}' ${fve}/FastViromeExplorer-final-sorted-abundance.tsv|grep -v '#'`
 for acc in ${Accs[@]};do
-    echo $acc               # virus id
     ref=${refs}/${acc}.fa
-    echo ${refs}
-    echo ${ref}
     ###add index for new virus####
 		if [ ! -f ${ref} ]
     then
@@ -66,12 +63,19 @@ for acc in ${Accs[@]};do
     ### extract virome sequence for particular virus id ###
     samtools view -@ ${thread} ${assembly}/kalli.bam ${acc} -o ${assembly}/${acc}_kalli.bam
     # change bam header
-    yy=`echo -e "grep \"^@\"|grep -E \"${acc}|@PG|@HD\""`
-    samtools reheader ${assembly}/${acc}_kalli.bam -c "$yy" >${assembly}/${acc}_kalli.reheader.bam
-    
-    samtools sort -@ ${thread} ${assembly}/${acc}_kalli.reheader.bam -o ${assembly}/${acc}_kalli_sorted.bam
+    samtools view -H ${assembly}/${acc}_kalli.bam > ${assembly}/temp.sam
+    grep 'SO' ${assembly}/temp.sam >${assembly}/temp.ext.header.hd
+    grep '@SQ' ${assembly}/temp.sam  |grep $acc >${assembly}/temp.ext.header.acc
+    grep '@PG' ${assembly}/temp.sam  >${assembly}/temp.ext.header.pg
+    samtools view ${assembly}/${acc}_kalli.bam|grep -v '^@' >${assembly}/temp.ext.reads
+    cat ${assembly}/temp.ext.header.hd ${assembly}/temp.ext.header.acc ${assembly}/temp.ext.header.pg ${assembly}/temp.ext.reads >${assembly}/${acc}_kalli.sam
+    #rm ${assembly}/temp*
+    samtools view -@ ${thread} ${assembly}/${acc}_kalli.sam -o ${assembly}/${acc}_kalli.bam
+    #rm ${assembly}/${acc}_kalli.sam
+    samtools sort -@ ${thread} ${assembly}/${acc}_kalli.bam -o ${assembly}/${acc}_kalli_sorted.bam
+    #rm ${assembly}/${acc}_kalli.bam
     java -jar ${picard} MarkDuplicates M=${assembly}/${acc}_dupstats REMOVE_DUPLICATES=TRUE I=${assembly}/${acc}_kalli_sorted.bam O=${assembly}/${acc}_nodup.bam
-    rm ${assembly}/${acc}_kalli*
+    #rm ${assembly}/${acc}_kalli*
     samtools index ${assembly}/${acc}_nodup.bam
     
     ### call snvs in virus ####
@@ -87,6 +91,7 @@ for acc in ${Accs[@]};do
     cp ${assembly}/${acc}.basecov.txt ${report}/${acc}.basecov.txt    
     
 done
+cat ${assembly}/*.fa >${report}/sequence.fa
 cat ${assembly}/*.cov.txt|grep -v '#ID' >${report}/temp.cov.clean.txt
 sed -n '1p' ${assembly}/${acc}.cov.txt >${report}/temp.header
 cat ${report}/temp.header ${report}/temp.cov.clean.txt >${report}/cov.summary.txt

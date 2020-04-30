@@ -57,11 +57,23 @@ do
 		    exit 1;;
 	  esac
 done
-bash ${pipedir}/preprocess.sh -1 ${input1} -2 ${input2} -o ${working_dic} -t ${thread} -h ${host_ref}
+if [ -z ${input2}]
+then
+    bash ${pipedir}/preprocess.sh -1 ${input1} -o ${working_dic} -t ${thread} -h ${host_ref}
+else
+    bash ${pipedir}/preprocess.sh -1 ${input1} -2 ${input2} -o ${working_dic} -t ${thread} -h ${host_ref}
+fi
 label=${input1}
 name=(${label//./ })
 label=${name##*/}
 sample_prefix=${label%%_*}
 bash ${pipedir}/virus_identification.sh -p ${sample_prefix} -o ${working_dic} -l ${virus_list} -k ${kallisto_list} -t ${thread}
-bash ${pipedir}/virus_assembly.sh -p ${sample_prefix} -r ${file_db} -o ${working_dic} -t ${thread}
+time bash ${pipedir}/virus_assembly.sh -p ${sample_prefix} -r ${file_db} -o ${working_dic} -t ${thread}
+echo 'time default'
+echo ${sample_prefix}
 bash ${pipedir}/report.sh -p ${sample_prefix} -o ${working_dic} -m ${method}
+
+#time bash ${pipedir}/virus_assembly_kallisto.sh -p ${sample_prefix} -r ${file_db} -o ${working_dic} -t ${thread}
+#bash ${pipedir}/report.sh -p ${sample_prefix} -o ${working_dic} -m kallisto
+#echo 'time kallisto'
+#echo ${sample_prefix}

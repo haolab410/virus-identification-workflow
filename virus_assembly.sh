@@ -51,10 +51,7 @@ samtools index -@ ${thread} ${assembly}/kalli.bam
 ################## virus assembly ###################################
 Accs=`awk '{print $1}' ${fve}/FastViromeExplorer-final-sorted-abundance.tsv|grep -v '#'`
 for acc in ${Accs[@]};do
-    echo $acc               # virus id
     ref=${refs}/${acc}.fa
-    echo ${refs}
-    echo ${ref}
     ###add index for new virus####
 		if [ ! -f ${ref} ]
     then
@@ -65,18 +62,36 @@ for acc in ${Accs[@]};do
     
     ### extract virome sequence for particular virus id ###
     samtools view -@ ${thread} ${assembly}/kalli.bam ${acc} -o ${assembly}/${acc}_kalli.bam
-    # change bam header
-    yy=`echo -e "grep \"^@\"|grep -E \"${acc}|@PG|@HD\""`
-    samtools reheader ${assembly}/${acc}_kalli.bam -c "$yy" >${assembly}/${acc}_kalli.reheader.bam
     
-    samtools sort -@ ${thread} ${assembly}/${acc}_kalli.reheader.bam -o ${assembly}/${acc}_kalli_sorted.bam
+    # change bam header
+    samtools view -H ${assembly}/${acc}_kalli.bam > ${assembly}/temp.sam
+    grep 'SO' ${assembly}/temp.sam >${assembly}/temp.ext.header.hd
+    grep '@SQ' ${assembly}/temp.sam  |grep $acc >${assembly}/temp.ext.header.acc
+    grep '@PG' ${assembly}/temp.sam  >${assembly}/temp.ext.header.pg
+    samtools view ${assembly}/${acc}_kalli.bam|grep -v '^@' >${assembly}/temp.ext.reads
+    cat ${assembly}/temp.ext.header.hd ${assembly}/temp.ext.header.acc ${assembly}/temp.ext.header.pg ${assembly}/temp.ext.reads >${assembly}/${acc}_kalli.sam
+    
+    #rm ${assembly}/temp*
+    samtools view -@ ${thread} ${assembly}/${acc}_kalli.sam -o ${assembly}/${acc}_kalli.bam
+    #rm ${assembly}/${acc}_kalli.sam
+    samtools sort -@ ${thread} ${assembly}/${acc}_kalli.bam -o ${assembly}/${acc}_kalli_sorted.bam
+    #rm ${assembly}/${acc}_kalli.bam
     
     bam2fastq ${assembly}/${acc}_kalli_sorted.bam -o ${assembly}/${acc}_kalli#.fq
     
+    
     ### bwa assembly of virome sequence ###
-    bwa aln -t ${thread} ${refs}/${acc} ${assembly}/${acc}_kalli_1.fq > ${assembly}/${acc}_1.sai
-    bwa aln -t ${thread} ${refs}/${acc} ${assembly}/${acc}_kalli_2.fq > ${assembly}/${acc}_2.sai
-    bwa sampe ${refs}/${acc} ${assembly}/${acc}_1.sai ${assembly}/${acc}_2.sai ${assembly}/${acc}_kalli_1.fq ${assembly}/${acc}_kalli_2.fq > ${assembly}/${acc}.sam
+    if [ ! -f ${assembly}/${acc}_kalli_1.fq ];
+    then
+        echo single
+        bwa aln -t ${thread} ${refs}/${acc} ${assembly}/${acc}_kalli.fq > ${assembly}/${acc}.sai
+        bwa samse ${refs}/${acc} ${assembly}/${acc}.sai ${assembly}/${acc}_kalli.fq > ${assembly}/${acc}.sam
+    else
+        echo paired
+        bwa aln -t ${thread} ${refs}/${acc} ${assembly}/${acc}_kalli_1.fq > ${assembly}/${acc}_1.sai
+        bwa aln -t ${thread} ${refs}/${acc} ${assembly}/${acc}_kalli_2.fq > ${assembly}/${acc}_2.sai
+        bwa sampe ${refs}/${acc} ${assembly}/${acc}_1.sai ${assembly}/${acc}_2.sai ${assembly}/${acc}_kalli_1.fq ${assembly}/${acc}_kalli_2.fq > ${assembly}/${acc}.sam
+    fi
     #rm ${assembly}/${acc}_kalli*
     
     #remove duplicates and sort
@@ -87,8 +102,8 @@ for acc in ${Accs[@]};do
     #rm ${assembly}/${acc}.bam
 
     ### call snvs in virus ####
-    #rm ${assembly}/${acc}.cov.txt
-    #rm ${assembly}/${acc}.basecov.txt
+    rm ${assembly}/${acc}.cov.txt
+    rm ${assembly}/${acc}.basecov.txt
     pileup.sh in=${assembly}/${acc}_nodup.bam out=${assembly}/${acc}.cov.txt basecov=${assembly}/${acc}.basecov.txt
     grep -v '#' ${assembly}/${acc}.basecov.txt|awk '{print $1"\t"$2+1"\t"$2+1"\t"$3}' |awk '$4<=3 {print}' >${assembly}/${acc}_basecov_bed 
     bcftools mpileup -f ${refs}/${acc}.fa ${assembly}/${acc}_nodup.bam | bcftools call -mv -Oz -o ${assembly}/${acc}.vcf.gz  
@@ -99,6 +114,7 @@ for acc in ${Accs[@]};do
     cp ${assembly}/${acc}.basecov.txt ${report}/${acc}.basecov.txt    
     
 done
+cat ${assembly}/*.fa >${report}/sequence.fa
 cat ${assembly}/*.cov.txt|grep -v '#ID' >${report}/temp.cov.clean.txt
 sed -n '1p' ${assembly}/${acc}.cov.txt >${report}/temp.header
 cat ${report}/temp.header ${report}/temp.cov.clean.txt >${report}/cov.summary.txt

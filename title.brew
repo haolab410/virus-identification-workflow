@@ -1,0 +1,44 @@
+\documentclass{article} 
+\usepackage{graphicx}
+\usepackage{underscore}
+\usepackage{caption2}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{longtable}
+
+\title{Next Generation Sequencing Analysis Reprot}
+%\author{\emph{Pei Hao, Yuanhua Liu}}
+
+\begin{document}
+\maketitle
+\tableofcontents 
+~\\
+
+Below is the next generation sequencing analysis report for sample <% cat(sample<-"SRR10903401") %>.
+
+
+
+
+\newpage
+\section{Triming and Quality Control of Raw Data }
+\subsection{Raw Data Quality}
+Table\ref{tab:readsQC} is generated from quality control software FastQC and fqcheck.
+These data includes sample's name(1 and 2 represent the two end of pair-end sequence, R1 and R2), reads number, base number, average length of reads, average GC content, Q20(percentage of bases with quality larger than 20), Q30(percentage of bases with quality larger than 30).
+
+\renewcommand\tablename{table}
+<% 
+ library(xtable); library(ggplot2) 
+ df.readsQC<-read.delim("qc.report.txt",check.names=F,sep="\t",header=T)
+ df.readsQCAnno<-read.csv("readsQCAnno.csv",check.names=F) 
+ tab.readsQC<-xtable(df.readsQC,digits=2,display=c("s","s","d","g","f","f","f","f"),align=c("p{1cm}","p{3.2cm}","p{1.2cm}","p{1.2cm}","p{1.3cm}","p{1.2cm}","p{1.2cm}","p{1.2cm}"))
+-%>
+
+\begin{table}[H]
+  \setlength{\abovecaptionskip}{0.cm}
+  \setlength{\belowcaptionskip}{-0.cm}
+  \centering
+  \caption{Summary of Raw Data Quality}
+  <% print(tab.readsQC, size="\\fontsize{8pt}{9pt}\\selectfont",table.placement = "",latex.environments = "", include.rownames = FALSE,floating = FALSE) %>
+  <% print(xtable(df.readsQCAnno),size="\\fontsize{8pt}{9pt}\\selectfont" , table.placement = "",latex.environments = "", include.rownames = FALSE,floating = FALSE) %>
+  \label{tab:readsQC}
+\end{table}

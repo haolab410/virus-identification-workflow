@@ -37,4 +37,10 @@ preprocess=${working_dic}/${sample_prefix}/preprocess				# path of results from 
 fve=${working_dic}/${sample_prefix}/fve/							      # path of virus identification step, would created automaticly below
 
 ################## virus detection #################################
-java ${FastViromeExplorer} -1 ${preprocess}/unmapped_1.fq -2 ${preprocess}/unmapped_2.fq -l ${virus_list} -i ${kallisto_list} -o $fve
+if [ -f ${preprocess}/unmapped_2.fq ];
+then
+    echo paired
+    java ${FastViromeExplorer} -1 ${preprocess}/unmapped_1.fq -2 ${preprocess}/unmapped_2.fq -l ${virus_list} -i ${kallisto_list} -o $fve
+else
+    java ${FastViromeExplorer} -1 ${preprocess}/unmapped.fq -l ${virus_list} -i ${kallisto_list} -o $fve
+fi

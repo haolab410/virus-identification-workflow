@@ -1,0 +1,79 @@
+Figure \ref{fig:perbaseseqqc} shows the GC content distribution over all sequence,(a) and (b) each represents the GC distribution in R1 and R2, the x-axis shows the ratio of G vs. C, the y-axis shows the number of reads at each ratio. The red line represents the measured value, the blue line represents the theoretical value which follows normal distribution, the average may not be at 50\%, but depends on average GC content).
+The deviation of the two lines are usually cost by library pollution or overrepresented reads.
+
+\newpage
+\section{Sequence Component Content}
+We use FastViromeExplorer to assess the percentage each species occupied in sequencing data, showing in figure \ref{fig:piechartQC}.
+
+\begin{figure}[H]
+  \setlength{\abovecaptionskip}{0.cm}
+  \setlength{\belowcaptionskip}{-0.cm}
+  \centering
+  \begin{minipage}[b]{1\textwidth}
+      \centering
+      \includegraphics[width=0.8\textwidth]{piechart-reads-qc.pdf}
+  \end{minipage}
+  \caption{Pie-chart of Species Distribution in Sequence}
+  \label{fig:piechartQC}
+\end{figure}
+Figure \ref{fig:piechartQC} shows the proportion of virus sequences and host sequences in sequence of sample.
+
+\section{Sequencing Coverage of Detected Viruses}
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[b]{1\textwidth}
+      \centering
+      \includegraphics[width=0.8\textwidth]{barplot-virus.pdf}
+  \end{minipage}
+  \caption{Total Number of Virus Sequence and Coverage Distribution}
+  \label{fig:barplotVir}
+\end{figure}
+
+Figure \ref{fig:barplotVir} shows the coverage of each detected virus in the sequence of sample, the left side of y-axis shows the coverage abundence of virome genome, the right side of y-axis shows the percentage of virome genome found. the blue bar chat represents coverage abundence, the red bar chat represents the percentage fo virome genome found in sample.
+Details of coverage are showed in Table \ref{tab:covVir} and Figure \ref{fig:covVir}.
+
+<% 
+ df.covVir<-read.csv("virus.distribution.csv",check.names=F)
+ df.covVirAnno<-read.csv("covVirAnno.csv",check.names=F) 
+ tab.cov<-xtable(df.covVir,digits=2,display=c("s","s","s","s","f","g","g"),align=c("p{2cm}","p{2.5cm}","p{2.5cm}","p{1.8cm}","p{1.5cm}","p{1.5cm}","p{2cm}"))
+-%>
+
+\begin{table}[H]
+  \setlength{\abovecaptionskip}{0.cm}
+  \setlength{\belowcaptionskip}{-0.cm}
+  \centering
+  \caption{Species Distribution}
+  <% print(tab.cov, size="\\fontsize{8pt}{9pt}\\selectfont",table.placement = "",latex.environments = "", include.rownames = FALSE,floating = FALSE) %>
+  <% print(xtable(df.covVirAnno), size="\\fontsize{8pt}{9pt}\\selectfont",table.placement = "",latex.environments = "", include.rownames = FALSE,floating = FALSE) %>
+  \label{tab:covVir}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[b]{1\textwidth}
+      \centering
+      \includegraphics[width=0.8\textwidth]{coverage-virus.pdf}
+  \end{minipage}
+  \caption{Sequence Coverage Distribution}
+  \label{fig:covVir}
+\end{figure}
+
+Figure \ref{fig:covVir} shows the distribution of detected virus sequence in its reference sequence if the coverage of virus is larger than 50\%. The x-axis shows the position in reference virus genome, the y-axis shows the coverage at each position.
+
+\newpage
+\section{Sequence Assembling Result}
+We used the reference sequence of detected virus as a guide to align the virus genome with bwa.
+\subsection{Virus Genome Counts}
+<% 
+ df.contig<-read.csv("stats.cons.csv",sep=",",check.names=F,header=T)
+ df.congtigAnno<-read.csv("congtigAnno.csv",check.names=F) 
+-%>
+\begin{table}[H]
+  \setlength{\abovecaptionskip}{0.cm}
+  \setlength{\belowcaptionskip}{-0.cm}
+  \centering
+  \caption{Statistic of Genome Assembly}
+  <% print(xtable(df.contig),size="\\fontsize{8pt}{9pt}\\selectfont", table.placement = "",latex.environments = "", include.rownames = FALSE,floating = FALSE) %>
+  <% print(xtable(df.congtigAnno),size="\\fontsize{8pt}{9pt}\\selectfont", table.placement = "",latex.environments = "", include.rownames = FALSE,floating = FALSE) %>
+  \label{tab:contig}
+\end{table}

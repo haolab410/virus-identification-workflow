@@ -6,8 +6,6 @@ args <- commandArgs(TRUE)
 folder = (args[1])
 sample = (args[2])
 folder = (paste(folder,'/',sep=''))
-print(folder)
-print('here')
     
 cols<-c("orange","green","blue","red3","gray","purple","black")
 meta<-read.table(paste(folder,"/cov.summary.txt",sep=""),check.names=F,comment.char = "",header=T)
@@ -25,11 +23,12 @@ Vnames<-temp[index,2]
 abund<-read.delim(paste(folder,"/abundance.tsv",sep=""),check.names=F,comment.char = "",header=T)
 reads.virus<-sum(abund$est_counts)
 reads.qc<-read.table(paste(folder,"/reads.qc.summary.txt",sep=""),header=T,sep="\t")
-reads.hg<-reads.qc$Reads_mapped
-reads.LQ<-reads.qc$Read_QC_Removed
-reads.Others<-reads.qc$Reads_Total-reads.hg-reads.LQ-reads.virus
+reads.hg<-sum(reads.qc$Reads_mapped)
+reads.LQ<-sum(reads.qc$Read_QC_Removed)
+reads.Others<-sum(reads.qc$Reads_Total-reads.hg-reads.LQ-reads.virus)
 read.distri<-c(reads.virus,reads.hg,reads.Others,reads.LQ)
-percent<- paste("(",round(100*read.distri/reads.qc$Reads_Total,digit=2),"%)",sep="")
+read.total<-sum(reads.qc$Reads_Total)
+percent<- paste("(",round(100*read.distri/read.total,digit=2),"%)",sep="")
 names(read.distri)<-paste(c("Virus","Host","Others","Low Quality"),percent,sep="")  
 pdf(file=paste(folder,"/piechart-reads-qc.pdf",sep=""))
 par(mar = c(2,5,2,5))
@@ -74,13 +73,11 @@ cols.bar<-c("blue", "red")
 legend("topright", legend=c("Reads of Coverage", "Percentage of Coverage"),density=c(NA,40),angle=45, fill=cols.bar,border=cols.bar,bty="n")
     
 par(new = T)  
-#print('here')
 if(!(is.na(max(mat.virus$cov.perc.norm)))){
     x<-barplot2(t(as.matrix(mat.virus[,  c( "est.counts.norm","cov.perc.norm")])),beside = T, yaxt = "n", names.arg = mat.virus$target_id, density=c(NA,10),angle=45,ylim=c(0, max(c(LeftAxisAt, RightAxisAt))),xaxt="n",col=cols.bar)
     text(cex=1, x=x[1,]-0.2, y=-0.1, labels=mat.virus$target_id, xpd=TRUE, srt=45)
     axis(4, at = RightAxisAt, labels = RightAxisLabs,las=1)
 }
-print('here2')
 axis(2, at = LeftAxisAt,labels=LeftAxisLabs,las=1,line=-0.5) 
       
     

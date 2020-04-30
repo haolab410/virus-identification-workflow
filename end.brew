@@ -1,0 +1,6 @@
+\subsection{Genome Sequence}
+<% df.contig.seq<-read.delim("sequence.fa",sep="\t",header=F) %>
+<% tab.seq<-xtable(df.contig.seq,align=c("p{1cm}","p{6cm}")) %>
+<% print(xtable(tab.seq),size="\\fontsize{8pt}{9pt}\\selectfont",tabular.environment = "longtable",include.rownames = FALSE,include.colnames = FALSE,booktabs = TRUE,hline.after = NULL, floating = FALSE) %>
+
+\end{document}

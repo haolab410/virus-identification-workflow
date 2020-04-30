@@ -47,10 +47,7 @@ mkdir ${refs}
 ################## virus assembly ###################################
 Accs=`awk '{print $1}' ${fve}/FastViromeExplorer-final-sorted-abundance.tsv|grep -v '#'`
 for acc in ${Accs[@]};do
-    echo $acc               # virus id
     ref=${refs}/${acc}.fa
-    echo ${refs}
-    echo ${ref}
     ###add index for new virus####
 		if [ ! -f ${ref} ]
     then
@@ -60,18 +57,26 @@ for acc in ${Accs[@]};do
     fi
     
     ### bwa assembly of virome sequence ###
-    bwa aln -t ${thread} ${refs}/${acc} ${preprocess}/unmapped_1.fq > ${assembly}/${acc}_bwa_1.sai
-    bwa aln -t ${thread} ${refs}/${acc} ${preprocess}/unmapped_2.fq > ${assembly}/${acc}_bwa_2.sai
-    bwa sampe ${refs}/${acc} ${assembly}/${acc}_bwa_1.sai ${assembly}/${acc}_bwa_2.sai ${preprocess}/unmapped_1.fq ${preprocess}/unmapped_2.fq > ${assembly}/${acc}.sam
-    rm ${assembly}/${acc}_bwa*
+    if [ ! -f ${preprocess}/unmapped_2.fq ];
+    then
+        echo single
+        bwa aln -t ${thread} ${refs}/${acc} ${preprocess}/unmapped.fq > ${assembly}/${acc}.sai
+        bwa samse ${refs}/${acc} ${assembly}/${acc}.sai ${preprocess}/unmapped.fq > ${assembly}/${acc}.sam
+    else
+        echo paired
+        bwa aln -t ${thread} ${refs}/${acc} ${preprocess}/unmapped_1.fq > ${assembly}/${acc}_bwa_1.sai
+        bwa aln -t ${thread} ${refs}/${acc} ${preprocess}/unmapped_2.fq > ${assembly}/${acc}_bwa_2.sai
+        bwa sampe ${refs}/${acc} ${assembly}/${acc}_bwa_1.sai ${assembly}/${acc}_bwa_2.sai ${preprocess}/unmapped_1.fq ${preprocess}/unmapped_2.fq > ${assembly}/${acc}.sam
+    fi
+    #rm ${assembly}/${acc}_bwa*
     
     
     #remove duplicates and sort
     samtools view -@ ${thread} -F 4 -Sbh ${assembly}/${acc}.sam|samtools sort -@ ${thread} -o ${assembly}/${acc}.bam 
     java -jar ${picard} MarkDuplicates M=${assembly}/${acc}_dupstats REMOVE_DUPLICATES=TRUE I=${assembly}/${acc}.bam O=${assembly}/${acc}_nodup.bam
     samtools index ${assembly}/${acc}_nodup.bam
-    rm ${assembly}/${acc}.sam
-    rm ${assembly}/${acc}.bam
+    #rm ${assembly}/${acc}.sam
+    #rm ${assembly}/${acc}.bam
 
     ### call snvs in virus ####
     rm ${assembly}/${acc}.cov.txt
@@ -82,10 +87,11 @@ for acc in ${Accs[@]};do
     tabix ${assembly}/${acc}.vcf.gz
     ###produce a fa file of sequence####
     cat ${refs}/${acc}.fa | bcftools consensus --iupac-codes -H 2pIu -m ${assembly}/${acc}_basecov_bed ${assembly}/${acc}.vcf.gz > ${assembly}/${acc}.fa
-       
+    
     cp ${assembly}/${acc}.basecov.txt ${report}/${acc}.basecov.txt    
     
 done
+cat ${assembly}/*.fa >${report}/sequence.fa
 cat ${assembly}/*.cov.txt|grep -v '#ID' >${report}/temp.cov.clean.txt
 sed -n '1p' ${assembly}/${acc}.cov.txt >${report}/temp.header
 cat ${report}/temp.header ${report}/temp.cov.clean.txt >${report}/cov.summary.txt
