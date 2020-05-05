@@ -34,8 +34,8 @@ do
 done
 
 preprocess=${working_dic}/${sample_prefix}/preprocess				# path of results from preprocess step
-fve=${working_dic}/${sample_prefix}/fve/							      # path of virus identification step, would created automaticly below
-
+fve=${working_dic}/${sample_prefix}/fve/					# path of virus identification step, would created automaticly below
+mkdir $fve
 ################## virus detection #################################
 if [ -f ${preprocess}/unmapped_2.fq ];
 then
